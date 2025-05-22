@@ -41,6 +41,9 @@ export default function AllExpenses() {
 	const [loading, setLoading] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 
+	// Mobile filter state
+	const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
 	useEffect(() => {
 		fetchBusinesses();
 		fetchExpenses();
@@ -249,57 +252,72 @@ export default function AllExpenses() {
 				</button>
 			</div>
 
-			{/* Filter Expenses */}
-			<div className='bg-gray-50 p-6 rounded-xl shadow-md mb-4'>
-				<h4 className='text-xl font-semibold mb-4 text-gray-800'>
-					Filter Expenses
-				</h4>
+			
+			{/* Filter Expenses Header */}
+			<div className='bg-gray-50 p-4 rounded-xl shadow-md mb-4 md:p-6'>
+				<div className='flex justify-between items-center md:block'>
+					<h4 className='text-xl font-semibold text-gray-800 mb-0 md:mb-4'>
+						Filter Expenses
+					</h4>
+					{/* Toggle button visible only on small devices */}
+					<button
+						onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+						className='md:hidden text-sm text-blue-600 underline'>
+						{isMobileFilterOpen ? 'Hide Filters' : 'Show Filters'}
+					</button>
+				</div>
 
-				<div className='grid sm:grid-cols-1 md:grid-cols-3 gap-6'>
-					{/* Business Filter */}
-					<div className='flex flex-col'>
-						<label className='text-sm font-medium text-gray-700 mb-1'>
-							Business
-						</label>
-						<CreatableSelect
-							isClearable
-							options={businessOptions}
-							onChange={setFilterBusiness}
-							value={filterBusiness}
-							placeholder='Select or create business'
-							className='text-sm'
-						/>
-					</div>
-
-					{/* Start Date */}
-					<div className='flex flex-col'>
-						<label className='text-sm font-medium text-gray-700 mb-1'>
-							Start Date
-						</label>
-						<div className='relative'>
-							<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
-							<input
-								type='date'
-								value={startDate}
-								onChange={(e) => setStartDate(e.target.value)}
-								className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+				{/* Collapsible section */}
+				<div
+					className={`${
+						isMobileFilterOpen ? 'block' : 'hidden'
+					} md:block mt-4`}>
+					<div className='grid sm:grid-cols-1 md:grid-cols-3 gap-6'>
+						{/* Business Filter */}
+						<div className='flex flex-col'>
+							<label className='text-sm font-medium text-gray-700 mb-1'>
+								Business
+							</label>
+							<CreatableSelect
+								isClearable
+								options={businessOptions}
+								onChange={setFilterBusiness}
+								value={filterBusiness}
+								placeholder='Select or create business'
+								className='text-sm'
 							/>
 						</div>
-					</div>
 
-					{/* End Date */}
-					<div className='flex flex-col'>
-						<label className='text-sm font-medium text-gray-700 mb-1'>
-							End Date
-						</label>
-						<div className='relative'>
-							<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
-							<input
-								type='date'
-								value={endDate}
-								onChange={(e) => setEndDate(e.target.value)}
-								className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-							/>
+						{/* Start Date */}
+						<div className='flex flex-col'>
+							<label className='text-sm font-medium text-gray-700 mb-1'>
+								Start Date
+							</label>
+							<div className='relative'>
+								<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
+								<input
+									type='date'
+									value={startDate}
+									onChange={(e) => setStartDate(e.target.value)}
+									className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+								/>
+							</div>
+						</div>
+
+						{/* End Date */}
+						<div className='flex flex-col'>
+							<label className='text-sm font-medium text-gray-700 mb-1'>
+								End Date
+							</label>
+							<div className='relative'>
+								<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
+								<input
+									type='date'
+									value={endDate}
+									onChange={(e) => setEndDate(e.target.value)}
+									className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

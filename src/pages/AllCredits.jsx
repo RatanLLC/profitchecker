@@ -17,25 +17,29 @@ import { CalendarDays } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 export default function AllCredits() {
+	// states
 	const [businessOptions, setBusinessOptions] = useState([]);
 	const [selectedBusiness, setSelectedBusiness] = useState(null);
 	const [amount, setAmount] = useState('');
 	const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
 	const [note, setNote] = useState('');
 	const [credits, setCredits] = useState([]);
-
+	// filter states
 	const [filterBusiness, setFilterBusiness] = useState(null);
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
-
+	// edit states
 	const [editId, setEditId] = useState(null);
 	const [editBusiness, setEditBusiness] = useState(null);
 	const [editAmount, setEditAmount] = useState('');
 	const [editDate, setEditDate] = useState('');
 	const [editNote, setEditNote] = useState('');
-
+	// loading states
 	const [loadingCredits, setLoadingCredits] = useState(false);
 	const [loadingBusinesses, setLoadingBusinesses] = useState(false);
+	// filter collapse state
+	const [isMobileCreditFilterOpen, setIsMobileCreditFilterOpen] = useState(false);
+
 
 	useEffect(() => {
 		fetchBusinesses();
@@ -251,48 +255,74 @@ export default function AllCredits() {
 				</button>
 			</div>
 
-			{/* Filter Section */}
-			<div className='bg-white p-6 rounded-xl shadow-md mb-4'>
-				<h3 className='text-xl font-bold mb-4 text-gray-800'>Filter Credits</h3>
-				<div className='grid md:grid-cols-3 gap-6'>
-					<div className='flex flex-col'>
-						<label className='text-sm font-medium text-gray-700 mb-1'>
-							Business
-						</label>
-						<CreatableSelect
-							isClearable
-							options={businessOptions}
-							onChange={setFilterBusiness}
-							value={filterBusiness}
-							placeholder='Select or create business'
-							className='text-sm'
-							menuPortalTarget={document.body}
-							styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-							isDisabled={loadingBusinesses}
-						/>
-					</div>
-					<div className='flex flex-col'>
-						<label className='text-sm font-medium text-gray-700 mb-1'>Start Date</label>
-						<div className='relative'>
-							<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
-							<input
-								type='date'
-								value={startDate}
-								onChange={(e) => setStartDate(e.target.value)}
-								className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+			{/* Filter Credits Section */}
+			<div className='bg-white p-4 rounded-xl shadow-md mb-4 md:p-6'>
+				<div className='flex justify-between items-center md:block'>
+					<h3 className='text-xl font-bold text-gray-800 mb-0 md:mb-4'>
+						Filter Credits
+					</h3>
+
+					{/* Mobile Toggle Button */}
+					<button
+						onClick={() =>
+							setIsMobileCreditFilterOpen(!isMobileCreditFilterOpen)
+						}
+						className='md:hidden text-sm text-blue-600 underline'>
+						{isMobileCreditFilterOpen ? 'Hide Filters' : 'Show Filters'}
+					</button>
+				</div>
+
+				{/* Collapsible Section */}
+				<div
+					className={`${
+						isMobileCreditFilterOpen ? 'block' : 'hidden'
+					} md:block mt-4`}>
+					<div className='grid md:grid-cols-3 gap-6'>
+						<div className='flex flex-col'>
+							<label className='text-sm font-medium text-gray-700 mb-1'>
+								Business
+							</label>
+							<CreatableSelect
+								isClearable
+								options={businessOptions}
+								onChange={setFilterBusiness}
+								value={filterBusiness}
+								placeholder='Select or create business'
+								className='text-sm'
+								menuPortalTarget={document.body}
+								styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+								isDisabled={loadingBusinesses}
 							/>
 						</div>
-					</div>
-					<div className='flex flex-col'>
-						<label className='text-sm font-medium text-gray-700 mb-1'>End Date</label>
-						<div className='relative'>
-							<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
-							<input
-								type='date'
-								value={endDate}
-								onChange={(e) => setEndDate(e.target.value)}
-								className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-							/>
+
+						<div className='flex flex-col'>
+							<label className='text-sm font-medium text-gray-700 mb-1'>
+								Start Date
+							</label>
+							<div className='relative'>
+								<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
+								<input
+									type='date'
+									value={startDate}
+									onChange={(e) => setStartDate(e.target.value)}
+									className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+								/>
+							</div>
+						</div>
+
+						<div className='flex flex-col'>
+							<label className='text-sm font-medium text-gray-700 mb-1'>
+								End Date
+							</label>
+							<div className='relative'>
+								<CalendarDays className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
+								<input
+									type='date'
+									value={endDate}
+									onChange={(e) => setEndDate(e.target.value)}
+									className='pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -312,10 +342,14 @@ export default function AllCredits() {
 						<thead className='bg-gray-100 text-left'>
 							<tr>
 								<th className='p-3 border-b'>Business</th>
-								<th className='p-3 border-b text-center'>Amount <small>Tk</small></th>
+								<th className='p-3 border-b text-center'>
+									Amount <small>Tk</small>
+								</th>
 								<th className='p-3 border-b text-center'>Date</th>
 								<th className='p-3 border-b text-left'>Note</th>
-								<th className='p-3 border-b text-center hidden md:table-cell'>Actions</th>
+								<th className='p-3 border-b text-center hidden md:table-cell'>
+									Actions
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -339,7 +373,9 @@ export default function AllCredits() {
 														isClearable
 														className='text-sm'
 														menuPortalTarget={document.body}
-														styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+														styles={{
+															menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+														}}
 													/>
 												) : (
 													credit.business

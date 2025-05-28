@@ -149,41 +149,101 @@ export default function Dashboard() {
 								<th className='px-6 py-4  text-center font-semibold'>
 									Profit Margin (%)
 								</th>
+								<th className='px-6 py-4  text-center font-semibold'>
+									Details
+								</th>
 							</tr>
 						</thead>
 						<tbody className='divide-y divide-gray-100'>
 							{summary.businesses &&
-								Object.entries(summary.businesses)
-									.map(([name, data]) => {
-										const profitMargin =
-											data.credit > 0
-												? ((data.profit / data.credit) * 100).toFixed(2)
-												: '0.00';
-										return { name, ...data, profitMargin };
-									})
-									.sort((a, b) => b.profitMargin - a.profitMargin)
-									.map((data, index) => (
-										<tr
-											key={data.name}
-											className='odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition'>
-											<td className='px-6 py-4 font-medium hidden md:table-cell'>
-												{index + 1}
-											</td>
-											<td className='px-6 py-4 font-semibold text-gray-800'>
-												{data.name}
-											</td>
-											<td className='px-6 py-4 text-center hidden md:table-cell'>
-												{data.expense}
-											</td>
-											<td className='px-6 py-4 text-center hidden md:table-cell'>
-												{data.credit}
-											</td>
-											<td className='px-6 py-4 text-center'>{data.profit}</td>
-											<td className='px-6 py-4 text-center text-green-600 font-bold'>
-												{data.profitMargin}%
-											</td>
-										</tr>
-									))}
+								(() => {
+									const formatter = new Intl.NumberFormat('en-BD', {
+										minimumFractionDigits: 0,
+										maximumFractionDigits: 0,
+									});
+
+									const businessRows = Object.entries(summary.businesses)
+										.map(([name, data]) => {
+											const profitMargin =
+												data.credit > 0
+													? ((data.profit / data.credit) * 100).toFixed(2)
+													: '0.00';
+											return { name, ...data, profitMargin };
+										})
+										.sort((a, b) => b.profitMargin - a.profitMargin);
+
+									const totalExpense = businessRows.reduce(
+										(acc, row) => acc + row.expense,
+										0
+									);
+									const totalCredit = businessRows.reduce(
+										(acc, row) => acc + row.credit,
+										0
+									);
+									const totalProfit = businessRows.reduce(
+										(acc, row) => acc + row.profit,
+										0
+									);
+									const totalProfitMargin =
+										totalCredit > 0
+											? ((totalProfit / totalCredit) * 100).toFixed(2)
+											: '0.00';
+
+									return (
+										<>
+											{businessRows.map((data, index) => (
+												<tr
+													key={data.name}
+													className='odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition'>
+													<td className='px-6 py-4 font-medium hidden md:table-cell'>
+														{index + 1}
+													</td>
+													<td className='px-6 py-4 font-semibold text-gray-800'>
+														{data.name}
+													</td>
+													<td className='px-6 py-4 text-center hidden md:table-cell'>
+														{formatter.format(data.expense)}
+													</td>
+													<td className='px-6 py-4 text-center hidden md:table-cell'>
+														{formatter.format(data.credit)}
+													</td>
+													<td className='px-6 py-4 text-center'>
+														{formatter.format(data.profit)}
+													</td>
+													<td className='px-6 py-4 text-center text-green-600 font-bold'>
+														{data.profitMargin}%
+													</td>
+													<td className='px-6 py-4 text-center'>
+														<a
+															href={`/${data.name}`}
+															className='text-blue-600 hover:underline'>
+															View Details
+														</a>
+													</td>
+												</tr>
+											))}
+
+											{/* Totals Row */}
+											<tr className='bg-gray-200 font-bold'>
+												<td className='px-6 py-4 hidden md:table-cell'>-</td>
+												<td className='px-6 py-4'>Total</td>
+												<td className='px-6 py-4 text-center hidden md:table-cell'>
+													{formatter.format(totalExpense)}
+												</td>
+												<td className='px-6 py-4 text-center hidden md:table-cell'>
+													{formatter.format(totalCredit)}
+												</td>
+												<td className='px-6 py-4 text-center'>
+													{formatter.format(totalProfit)}
+												</td>
+												<td className='px-6 py-4 text-center text-green-700'>
+													{totalProfitMargin}%
+												</td>
+												<td className='px-6 py-4 text-center'>-</td>
+											</tr>
+										</>
+									);
+								})()}
 						</tbody>
 					</table>
 				</div>
@@ -243,7 +303,7 @@ export default function Dashboard() {
 			</section>
 
 			{/* Business Performance */}
-			<section className='space-y-10'>
+			{/* <section className='space-y-10'>
 				<h2 className='text-2xl font-semibold  text-gray-700'>
 					Business Performance
 				</h2>
@@ -304,7 +364,7 @@ export default function Dashboard() {
 							</div>
 						</div>
 					))}
-			</section>
+			</section> */}
 		</div>
 	);
 }

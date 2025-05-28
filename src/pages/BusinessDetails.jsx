@@ -74,8 +74,8 @@ export default function BusinessDetails() {
 
 	if (isLoading) {
 		return (
-			<div className='flex justify-center items-center h-screen'>
-				Loading...
+			<div className='flex items-center justify-center h-screen'>
+				<div className='animate-spin rounded-full h-20 w-20 border-4 border-blue-500 border-t-transparent'></div>
 			</div>
 		);
 	}

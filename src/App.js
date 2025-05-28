@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
+import BusinessDetails from './pages/BusinessDetails';
 
 function Navbar() {
 	const linkClasses = ({ isActive }) =>
@@ -59,6 +60,7 @@ export default function App() {
 					<Route path='/dashboard' element={<Dashboard />} />
 					<Route path='/all-expenses' element={<AllExpenses />} />
 					<Route path='/all-credits' element={<AllCredits />} />
+					<Route path='/:businessName' element={<BusinessDetails />} />
 				</Routes>
 			</div>
 		</Router>
